@@ -1,0 +1,26 @@
+---
+  - name: "Create server.base_dirs.root Directory '{{ server.base_dirs.root }}'"
+    file:
+      path: "{{ server.base_dirs.root }}"
+      state: directory
+      owner: "{{ users.service.uid }}"
+      group: "{{ group.service.gid }}"
+      mode: 0775
+
+  - name: "Add service group '{{ group.service.name }}'"
+    group:
+      gid: "{{ group.service.gid }}"
+      name: "{{ group.service.name }}"
+      state: present
+    register: serverr.service_group
+  - name: Create Service User '{{ users.service.name }}'
+    user:
+      uid: "{{ users.service.uid }}"
+      name: "{{ users.service.name }}"
+      comment: ServerrProject Service User
+      state: present
+      create_home: no
+      home: "{{ server.base_dirs.root }}"
+      shell: /bin/bash
+      group: "{{ serverr.service_group.name }}"
+    register: serverr.service_user
